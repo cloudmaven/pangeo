@@ -38,6 +38,7 @@ class SLURMCluster(JobQueue):
                  memory='7GB',
                  walltime='00:30:00',
                  interface=None,
+                 death_timeout=60,
                  extra='',
                  **kwargs):
         """ Initialize a SLURM Cluster
@@ -63,6 +64,8 @@ class SLURMCluster(JobQueue):
             Walltime for each worker job.
         interface : str
             Network interface like 'eth0' or 'ib0'.
+        death_timeout : float
+            Seconds to wait for a scheduler before closing workers
         extra : str
             Additional arguments to pass to `dask-worker`
         kwargs : dict
@@ -79,11 +82,16 @@ class SLURMCluster(JobQueue):
 #SBATCH -e %(name)s.err
 #SBATCH -o %(name)s.out
 
+export LANG="en_US.utf8"
+export LANGUAGE="en_US.utf8"
+export LC_ALL="en_US.utf8"
+
 %(base_path)s/dask-worker %(scheduler)s \
     --nthreads %(threads_per_worker)d \
     --nprocs %(processes)s \
     --memory-limit %(memory)s \
     --name %(name)s-%(n)d \
+    --death-timeout %(death_timeout)s \
      %(extra)s
 """.lstrip()
 
@@ -108,6 +116,7 @@ class SLURMCluster(JobQueue):
                        'walltime': walltime,
                        'base_path': dirname,
                        'memory': memory,
+                       'death_timeout': death_timeout,
                        'extra': extra}
         self.jobs = dict()
         self.n = 0

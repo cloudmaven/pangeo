@@ -4,7 +4,7 @@ proxy:
 singleuser:
   image:
     name: daskdev/pangeo-notebook
-    tag: latest
+    tag: 2018-02-22
   cmd: ['start-singleuser.sh']
   extraEnv:
     EXTRA_PIP_PACKAGES: >-
@@ -36,7 +36,7 @@ auth:
   type: github
   github:
     clientId: "2cb5e09d5733ff2e6ae3"
-    clientSecret: SECRET
+    clientSecret: "SECRET"
     callbackUrl: "http://pangeo.pydata.org/hub/oauth_callback"
   admin:
     access: true
@@ -68,5 +68,5 @@ hub:
 cull:
   enabled: true
   users: false
-  timeout: 1200
-  every: 120
+  timeout: 3600
+  every: 600
